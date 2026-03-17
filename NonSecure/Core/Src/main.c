@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "i2c_lcd.h"
+#include "secure_nsc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,7 +57,9 @@ static void MX_I2C1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void print_asterisk(void) {
+    lcd_putchar(&lcd, '*');
+}
 /* USER CODE END 0 */
 
 /**
@@ -90,8 +93,24 @@ int main(void)
   lcd.hi2c = &hi2c1;     // hi2c1 is your I2C handler
   lcd.address = 0x4E;    // I2C address for the first LCD
   lcd_init(&lcd);
+  
+  
+  lcd_clear(&lcd);
 
-  lcd_puts(&lcd, "Hello, LCD 1!");
+  
+  lcd_puts(&lcd, "Enter PIN:");
+  
+  lcd_gotoxy(&lcd, 0, 1);
+
+  int res = authenticate(print_asterisk);
+  
+  lcd_clear(&lcd);
+  if (res == 0) {
+    lcd_puts(&lcd, "ok");
+  } else {
+    lcd_puts(&lcd, "access denied");
+  }
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
