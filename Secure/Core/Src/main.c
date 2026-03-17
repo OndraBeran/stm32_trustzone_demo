@@ -21,7 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "KeyPad.h"
 #include "identify_chip.h"
+#include <sys/types.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -129,7 +131,16 @@ int main(void)
   }
 
   printf("Calling identify_chip()\n");
-  identify_chip();
+  //identify_chip();
+
+  KeyPad_Init();
+  HAL_Delay(50);          /* let row pull-ups settle after init */
+  // KeyPad_Scan();          /* flush any spurious startup detection */
+
+  while(1) {
+    char c = KeyPad_WaitForKeyGetChar(0);
+    printf("Key Pressed: %c\n", c);
+  }
 
   /*************** Setup and jump to non-secure *******************************/
 

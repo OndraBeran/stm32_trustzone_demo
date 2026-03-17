@@ -62,6 +62,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/identify_chip.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/mbedtls_v4/mbedtls_platform.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/KeyPad.c
 )
 
 # Link directories setup
