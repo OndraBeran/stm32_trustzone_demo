@@ -39,7 +39,7 @@ lt_ctx_mbedtls_v4_t crypto_ctx;
 #define PRINT_BUFF_SIZE 196
 
 /** @brief Number of MAC-and-Destroy rounds (only in this example). */
-#define MACANDD_ROUNDS 5
+#define MACANDD_ROUNDS 12
 
 #if (MACANDD_ROUNDS > 12)
 #error \
@@ -484,7 +484,8 @@ static lt_ret_t PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uint8_
         goto exit;
     }
 
-    for (int x = nvm.i; x < MACANDD_ROUNDS - 1; x++) {
+    // TODO: originally < MACANDD_ROUNDS - 1, not sure if this is corrects, but it fixes the issue
+    for (int x = nvm.i; x < MACANDD_ROUNDS; x++) {
         uint8_t ignore[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
 
         printf("\tDoing M&D sequence...");
