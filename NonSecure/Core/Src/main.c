@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "i2c_lcd.h"
 #include "secure_nsc.h"
+#include "stm32u5xx_hal.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -93,23 +94,8 @@ int main(void)
   lcd.hi2c = &hi2c1;     // hi2c1 is your I2C handler
   lcd.address = 0x4E;    // I2C address for the first LCD
   lcd_init(&lcd);
-  
-  
-  lcd_clear(&lcd);
 
   
-  lcd_puts(&lcd, "Enter PIN:");
-  
-  lcd_gotoxy(&lcd, 0, 1);
-
-  int res = authenticate(print_asterisk);
-  
-  lcd_clear(&lcd);
-  if (res == 0) {
-    lcd_puts(&lcd, "ok");
-  } else {
-    lcd_puts(&lcd, "access denied");
-  }
 
   /* USER CODE END 2 */
 
@@ -118,7 +104,25 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+    lcd_clear(&lcd);
+  
 
+
+    lcd_puts(&lcd, "Attempts left: ");
+    lcd_putchar(&lcd, remaining_tries_nsc() + '0'); // Convert number to character
+
+    lcd_gotoxy(&lcd, 0, 1);
+
+    int res = authenticate(print_asterisk);
+    
+    lcd_clear(&lcd);
+    if (res == 0) {
+      lcd_puts(&lcd, "ok");
+    } else {
+      lcd_puts(&lcd, "access denied");
+    }
+
+    HAL_Delay(2000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

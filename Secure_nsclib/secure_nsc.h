@@ -40,6 +40,8 @@ SECURE_FAULT_CB_ID     = 0x00U, /*!< System secure fault callback ID */
 /* Exported functions ------------------------------------------------------- */
 void SECURE_RegisterCallback(SECURE_CallbackIDTypeDef CallbackId, void *func);
 
+uint8_t remaining_tries_nsc(void);
+
 int authenticate(void *callback);
 
 #endif /* SECURE_NSC_H */

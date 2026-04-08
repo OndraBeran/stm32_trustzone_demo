@@ -213,6 +213,22 @@ void SysTick_Handler(void)
 /* please refer to the startup file (startup_stm32u5xx.s).                    */
 /******************************************************************************/
 
+/**
+  * @brief This function handles Global TrustZone Controller interrupt.
+  */
+void GTZC_IRQHandler(void)
+{
+  /* USER CODE BEGIN GTZC_IRQn 0 */
+  while (1)
+  {
+  }
+  /* USER CODE END GTZC_IRQn 0 */
+  HAL_GTZC_IRQHandler();
+  /* USER CODE BEGIN GTZC_IRQn 1 */
+
+  /* USER CODE END GTZC_IRQn 1 */
+}
+
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */

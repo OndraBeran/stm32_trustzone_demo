@@ -18,11 +18,13 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "pin_verification.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "KeyPad.h"
 #include "identify_chip.h"
+#include "stm32u5xx_hal_gtzc.h"
 #include <sys/types.h>
 /* USER CODE END Includes */
 
@@ -86,7 +88,7 @@ int main(void)
   /* in SystemInit() based on partition_stm32u545xx.h file's definitions. */
 
   /* USER CODE BEGIN 1 */
-
+  SCB->SHCSR |= SCB_SHCSR_SECUREFAULTENA_Msk;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -130,8 +132,10 @@ int main(void)
     Error_Handler();
   }
 
+  printf("address of main: 0x%08lx\n", (unsigned long)main);
   printf("Calling identify_chip()\n");
   //identify_chip();
+  pin_verification_init();
 
   KeyPad_Init();
 
@@ -265,6 +269,16 @@ static void MX_GTZC_S_Init(void)
   /* USER CODE BEGIN GTZC_S_Init 1 */
 
   /* USER CODE END GTZC_S_Init 1 */
+  // if (HAL_GTZC_TZIC_EnableIT(GTZC_PERIPH_I2C1) != HAL_OK)
+  // {
+  //   Error_Handler();
+  // }
+
+  // if (HAL_GTZC_TZSC_ConfigPeriphAttributes(GTZC_PERIPH_I2C1, GTZC_TZSC_PERIPH_SEC|GTZC_TZSC_PERIPH_NPRIV) != HAL_OK)
+  // {
+  //   Error_Handler();
+  // }
+
   if (HAL_GTZC_TZSC_ConfigPeriphAttributes(GTZC_PERIPH_SPI1, GTZC_TZSC_PERIPH_SEC|GTZC_TZSC_PERIPH_NPRIV) != HAL_OK)
   {
     Error_Handler();

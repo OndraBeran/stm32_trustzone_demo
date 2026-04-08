@@ -24,10 +24,13 @@
 #include "secure_nsc.h"
 #include "KeyPad.h"
 #include "identify_chip.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <arm_cmse.h>  // for cmse_nsfptr_create, cmse_is_nsfptr
 #include <sys/_intsup.h>
+#include "libtropic_common.h"
+#include "pin_verification.h"
 /** @addtogroup STM32U5xx_HAL_Examples
 
   * @{
@@ -73,13 +76,13 @@ CMSE_NS_ENTRY void SECURE_RegisterCallback(SECURE_CallbackIDTypeDef CallbackId, 
   }
 }
 
-/**
-  * @}
-  */
+CMSE_NS_ENTRY uint8_t remaining_tries_nsc() {
+  return remaining_tries();
+}
+
 CMSE_NS_ENTRY int authenticate(void *callback)
 {
-  char * expected_pin = "1234";
-  char input_pin[5] = {0};  // 4 digits + null terminator
+  uint8_t input_pin[4] = {0};
 
   funcptr_NS ns_cb = NULL;
 
@@ -96,24 +99,18 @@ CMSE_NS_ENTRY int authenticate(void *callback)
   for (int i = 0; i < 4; ++i) {
     char c = KeyPad_WaitForKeyGetChar(0);
     printf("Key Pressed: %c\n", c);
-    input_pin[i] = c;
+    input_pin[i] = c - '0';  // Convert char digit to integer
 
     if (ns_cb != NULL) {
       ns_cb();  // Non-secure callback invocation
     }
   }
 
-  // mock tropic call
-  identify_chip();
+  int check_result = check_pin(input_pin, sizeof(input_pin));
+  printf("Check pin returned: %d\n", check_result);
+  printf("Remaining tries: %d\n", remaining_tries());
 
-  if (strcmp(input_pin, expected_pin) == 0) {
-    return 0;  // Authentication successful
-  } else {
-    return -1;  // Authentication failed
-  }
-
-
-  return 0;
+  return check_result;
 }
 
 /**
