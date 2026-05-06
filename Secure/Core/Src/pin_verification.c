@@ -39,7 +39,7 @@ lt_ctx_mbedtls_v4_t crypto_ctx;
 #define PRINT_BUFF_SIZE 196
 
 /** @brief Number of MAC-and-Destroy rounds (only in this example). */
-#define MACANDD_ROUNDS 12
+#define MACANDD_ROUNDS 5
 
 #if (MACANDD_ROUNDS > 12)
 #error \
@@ -538,12 +538,19 @@ exit:
     return ret;
 }
 
+/**
+ * @brief Read the number of remaining tries from non-volatile memory. In case of any error -1 is returned. This function is just an example of how to read the number of
+ * @return number of remaining tries, -1 on failure.
+ */
 uint8_t remaining_tries() {
     struct lt_macandd_nvm_t nvm = {0};
     uint16_t read_size;
-    // TODO: Check return value
-    lt_r_mem_data_read(&lt_handle, MACANDD_R_MEM_DATA_SLOT, (uint8_t *)&nvm, sizeof(nvm),
+    lt_ret_t ret = lt_r_mem_data_read(&lt_handle, MACANDD_R_MEM_DATA_SLOT, (uint8_t *)&nvm, sizeof(nvm),
                                       &read_size);
+    if (ret != LT_OK) {
+        return -1;
+    }
+    
     return nvm.i;
 }
 
@@ -678,7 +685,6 @@ int pin_verification_init(void)
 
     // User's PIN.
     uint8_t pin[] = {1, 2, 3, 4};
-    uint8_t pin_wrong[] = {2, 2, 3, 4};
 
     printf("\nWill initialize Mac-And-Destroy:\n");
     printf("Generating random master_secret (using TROPIC01's TRNG)...");
@@ -720,21 +726,6 @@ int pin_verification_init(void)
     printf("remaining tries: %d\n", remaining_tries(&lt_handle));
 
     return ret;
-
-    // printf("Doing final PIN attempt with correct PIN, slots are reinitialized again...\n");
-    // ret = PIN_entry_check(&lt_handle, pin_wrong, sizeof(pin), additional_data, sizeof(additional_data),
-    //                       (uint8_t[TR01_MAC_AND_DESTROY_DATA_SIZE]){0});
-    // if (ret != LT_OK) {
-    //     fprintf(stderr, "\nAttempt with correct PIN failed, ret=%s\n", lt_ret_verbose(ret));
-    //     lt_session_abort(&lt_handle);
-    //     lt_deinit(&lt_handle);
-    //     mbedtls_psa_crypto_free();
-    //     return -1;
-    // }
-    // printf("Final PIN attempt was successful\n");
-
-    
-    // return deinit(&lt_handle);
 }
 
 lt_ret_t check_pin(const uint8_t *pin, const uint8_t pin_size)

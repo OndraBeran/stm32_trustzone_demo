@@ -88,6 +88,7 @@ int main(void)
   /* in SystemInit() based on partition_stm32u545xx.h file's definitions. */
 
   /* USER CODE BEGIN 1 */
+  // Enable SecureFault handler
   SCB->SHCSR |= SCB_SHCSR_SECUREFAULTENA_Msk;
   /* USER CODE END 1 */
 
@@ -132,9 +133,9 @@ int main(void)
     Error_Handler();
   }
 
-  printf("address of main: 0x%08lx\n", (unsigned long)main);
-  printf("Calling identify_chip()\n");
-  //identify_chip();
+
+  // this function starts the communication with the TROPIC01
+  // and initializes data for PIN verification via mac_and_destroy
   pin_verification_init();
 
   KeyPad_Init();
@@ -279,6 +280,7 @@ static void MX_GTZC_S_Init(void)
   //   Error_Handler();
   // }
 
+  // configure SPI1, USART1 and RNG as Secure and Non-privileged peripherals as they are used by the secure application
   if (HAL_GTZC_TZSC_ConfigPeriphAttributes(GTZC_PERIPH_SPI1, GTZC_TZSC_PERIPH_SEC|GTZC_TZSC_PERIPH_NPRIV) != HAL_OK)
   {
     Error_Handler();
@@ -291,17 +293,19 @@ static void MX_GTZC_S_Init(void)
   {
     Error_Handler();
   }
+
+  // note it is not necessary to configure I2C1 as non-secure as that is the dafault state
+
+  // configure SRAM2 as Non-secure and Privileged
+  // note that the Privileged configuration is not necessary as the processor will always be 
+  // in privileged mode as the privilege is never dropped, but this is the default configuration by CubeMX
   MPCBB_Area_Desc.SecureRWIllegalMode = GTZC_MPCBB_SRWILADIS_ENABLE;
   MPCBB_Area_Desc.InvertSecureState = GTZC_MPCBB_INVSECSTATE_NOT_INVERTED;
   MPCBB_Area_Desc.AttributeConfig.MPCBB_SecConfig_array[0] =   0x00000000;
   MPCBB_Area_Desc.AttributeConfig.MPCBB_SecConfig_array[1] =   0x00000000;
   MPCBB_Area_Desc.AttributeConfig.MPCBB_SecConfig_array[2] =   0x00000000;
   MPCBB_Area_Desc.AttributeConfig.MPCBB_SecConfig_array[3] =   0x00000000;
-  MPCBB_Area_Desc.AttributeConfig.MPCBB_PrivConfig_array[0] =   0xFFFFFFFF;
-  MPCBB_Area_Desc.AttributeConfig.MPCBB_PrivConfig_array[1] =   0xFFFFFFFF;
-  MPCBB_Area_Desc.AttributeConfig.MPCBB_PrivConfig_array[2] =   0xFFFFFFFF;
-  MPCBB_Area_Desc.AttributeConfig.MPCBB_PrivConfig_array[3] =   0xFFFFFFFF;
-  MPCBB_Area_Desc.AttributeConfig.MPCBB_LockConfig_array[0] =   0x00000000;
+  MPCBB_Area_Desc.AttributeConfig.MPCBB_LockConfig_array[0] =  0x0000000F;
   if (HAL_GTZC_MPCBB_ConfigMem(SRAM2_BASE, &MPCBB_Area_Desc) != HAL_OK)
   {
     Error_Handler();
@@ -448,7 +452,8 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : PC9 */
+  // set pin PC9 as output
+  // this pin is used as the Chip Select pin for SPI
   GPIO_InitStruct.Pin = GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;

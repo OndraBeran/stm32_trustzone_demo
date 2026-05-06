@@ -87,10 +87,8 @@ CMSE_NS_ENTRY int authenticate(void *callback)
   funcptr_NS ns_cb = NULL;
 
   if (callback != NULL) {
-    // Force LSB=1 (non-secure state) and cast to NS-callable type
     ns_cb = (funcptr_NS)cmse_nsfptr_create(callback);
 
-    // Optional but recommended runtime validation
     if (!cmse_is_nsfptr(ns_cb)) {
       return -1;
     }

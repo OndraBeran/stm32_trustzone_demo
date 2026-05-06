@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32u5xx_it.h"
+#include <stdio.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -219,6 +220,7 @@ void SysTick_Handler(void)
 void GTZC_IRQHandler(void)
 {
   /* USER CODE BEGIN GTZC_IRQn 0 */
+  printf("TrustZone violation detected! Entering infinite loop...\n");
   while (1)
   {
   }
