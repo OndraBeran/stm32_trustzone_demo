@@ -19,10 +19,12 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "stm32u5xx_hal_gtzc.h"
 #include "stm32u5xx_it.h"
-#include <stdio.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdint.h>
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,7 +49,6 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-void SecureFault_Handler_C(uint32_t *frame);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -147,11 +148,11 @@ void SecureFault_Handler(void)
   /* USER CODE BEGIN SecureFault_IRQn 0 */
   printf("SecureFault_Handler: A secure fault has occurred! Entering infinite loop...\n");
   /* USER CODE END SecureFault_IRQn 0 */
-  // while (1)
-  // {
-  //   /* USER CODE BEGIN W1_SecureFault_IRQn 0 */
-  //   /* USER CODE END W1_SecureFault_IRQn 0 */
-  // }
+  while (1)
+  {
+    /* USER CODE BEGIN W1_SecureFault_IRQn 0 */
+    /* USER CODE END W1_SecureFault_IRQn 0 */
+  }
 }
 
 /**
@@ -221,6 +222,29 @@ void GTZC_IRQHandler(void)
 {
   /* USER CODE BEGIN GTZC_IRQn 0 */
   printf("GTZC Interrupt occured!\n");
+  uint32_t gtzc_flag = 0;
+  if (HAL_GTZC_TZIC_GetFlag(GTZC_PERIPH_I2C1, &gtzc_flag) == HAL_OK 
+    && gtzc_flag == GTZC_TZIC_ILA_EVENT_PENDING)
+  {
+    printf("GTZC Interrupt: I2C1 peripheral triggered the interrupt.\n");
+    HAL_GTZC_TZIC_ClearFlag(GTZC_PERIPH_I2C1);
+  }
+  else if (HAL_GTZC_TZIC_GetFlag(GTZC_PERIPH_SPI1, &gtzc_flag) == HAL_OK 
+    && gtzc_flag == GTZC_TZIC_ILA_EVENT_PENDING)
+  {
+    printf("GTZC Interrupt: SPI1 peripheral triggered the interrupt.\n");
+    HAL_GTZC_TZIC_ClearFlag(GTZC_PERIPH_SPI1);
+  }
+  else if (HAL_GTZC_TZIC_GetFlag(GTZC_PERIPH_FLASH, &gtzc_flag) == HAL_OK 
+    && gtzc_flag == GTZC_TZIC_ILA_EVENT_PENDING)
+  {
+    printf("GTZC Interrupt: FLASH peripheral triggered the interrupt.\n");
+    HAL_GTZC_TZIC_ClearFlag(GTZC_PERIPH_FLASH);
+  }
+  else
+  {
+    printf("GTZC Interrupt: Unknown peripheral triggered the interrupt.\n");
+  }
   // while (1)
   // {
   // }

@@ -18,12 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "pin_verification.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "KeyPad.h"
-#include "identify_chip.h"
+#include "pin_verification.h"
 #include "stm32u5xx_hal_gtzc.h"
 #include <sys/types.h>
 /* USER CODE END Includes */
@@ -55,10 +54,6 @@ COM_InitTypeDef BspCOMInit;
 RNG_HandleTypeDef hrng;
 
 SPI_HandleTypeDef hspi1;
-
-const uint8_t key[] = {0xf9, 0x75, 0xeb, 0x3c, 0x2f, 0xd7, 0x90, 0xc9, 0x6f, 0x29, 0x4f,
-                                0x15, 0x57, 0xa5, 0x03, 0x17, 0x80, 0xc9, 0xaa, 0xfa, 0x14, 0x0d,
-                                0xa2, 0x8f, 0x55, 0xe7, 0x51, 0x57, 0x37, 0xb2, 0x50, 0x2c};
 
 /* USER CODE BEGIN PV */
 
@@ -136,8 +131,6 @@ int main(void)
   {
     Error_Handler();
   }
-
-  printf("address of key in secure memory: %p\n", (void*)key);
 
   // this function starts the communication with the TROPIC01
   // and initializes data for PIN verification via mac_and_destroy
@@ -275,17 +268,18 @@ static void MX_GTZC_S_Init(void)
   /* USER CODE BEGIN GTZC_S_Init 1 */
 
   /* USER CODE END GTZC_S_Init 1 */
-  // if (HAL_GTZC_TZIC_EnableIT(GTZC_PERIPH_I2C1) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
-
-  // if (HAL_GTZC_TZSC_ConfigPeriphAttributes(GTZC_PERIPH_I2C1, GTZC_TZSC_PERIPH_SEC|GTZC_TZSC_PERIPH_NPRIV) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
-
-  // configure SPI1, USART1 and RNG as Secure and Non-privileged peripherals as they are used by the secure application
+  if (HAL_GTZC_TZIC_EnableIT(GTZC_PERIPH_I2C1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_GTZC_TZIC_EnableIT(GTZC_PERIPH_SPI1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_GTZC_TZIC_EnableIT(GTZC_PERIPH_FLASH) != HAL_OK)
+  {
+    Error_Handler();
+  }
   if (HAL_GTZC_TZSC_ConfigPeriphAttributes(GTZC_PERIPH_SPI1, GTZC_TZSC_PERIPH_SEC|GTZC_TZSC_PERIPH_NPRIV) != HAL_OK)
   {
     Error_Handler();
@@ -298,19 +292,17 @@ static void MX_GTZC_S_Init(void)
   {
     Error_Handler();
   }
-
-  // note it is not necessary to configure I2C1 as non-secure as that is the dafault state
-
-  // configure SRAM2 as Non-secure and Privileged
-  // note that the Privileged configuration is not necessary as the processor will always be 
-  // in privileged mode as the privilege is never dropped, but this is the default configuration by CubeMX
   MPCBB_Area_Desc.SecureRWIllegalMode = GTZC_MPCBB_SRWILADIS_ENABLE;
   MPCBB_Area_Desc.InvertSecureState = GTZC_MPCBB_INVSECSTATE_NOT_INVERTED;
   MPCBB_Area_Desc.AttributeConfig.MPCBB_SecConfig_array[0] =   0x00000000;
   MPCBB_Area_Desc.AttributeConfig.MPCBB_SecConfig_array[1] =   0x00000000;
   MPCBB_Area_Desc.AttributeConfig.MPCBB_SecConfig_array[2] =   0x00000000;
   MPCBB_Area_Desc.AttributeConfig.MPCBB_SecConfig_array[3] =   0x00000000;
-  MPCBB_Area_Desc.AttributeConfig.MPCBB_LockConfig_array[0] =  0x0000000F;
+  MPCBB_Area_Desc.AttributeConfig.MPCBB_PrivConfig_array[0] =   0xFFFFFFFF;
+  MPCBB_Area_Desc.AttributeConfig.MPCBB_PrivConfig_array[1] =   0xFFFFFFFF;
+  MPCBB_Area_Desc.AttributeConfig.MPCBB_PrivConfig_array[2] =   0xFFFFFFFF;
+  MPCBB_Area_Desc.AttributeConfig.MPCBB_PrivConfig_array[3] =   0xFFFFFFFF;
+  MPCBB_Area_Desc.AttributeConfig.MPCBB_LockConfig_array[0] =   0x00000000;
   if (HAL_GTZC_MPCBB_ConfigMem(SRAM2_BASE, &MPCBB_Area_Desc) != HAL_OK)
   {
     Error_Handler();
@@ -457,8 +449,7 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_RESET);
 
-  // set pin PC9 as output
-  // this pin is used as the Chip Select pin for SPI
+  /*Configure GPIO pin : PC9 */
   GPIO_InitStruct.Pin = GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;

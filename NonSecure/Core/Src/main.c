@@ -44,9 +44,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 I2C_HandleTypeDef hi2c1;
-I2C_LCD_HandleTypeDef lcd;
-/* USER CODE BEGIN PV */
 
+/* USER CODE BEGIN PV */
+I2C_LCD_HandleTypeDef lcd;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,6 +88,7 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+  MX_GPIO_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   lcd.hi2c = &hi2c1;     // hi2c1 is your I2C handler
@@ -101,6 +102,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+    
+    /* USER CODE BEGIN 3 */
     lcd_clear(&lcd);
   
 
@@ -120,7 +123,6 @@ int main(void)
     }
 
     HAL_Delay(2000);
-    /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
@@ -171,6 +173,25 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 2 */
 
+}
+
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+
+  /* USER CODE END MX_GPIO_Init_1 */
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
