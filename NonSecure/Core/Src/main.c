@@ -88,14 +88,11 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   lcd.hi2c = &hi2c1;     // hi2c1 is your I2C handler
   lcd.address = 0x4E;    // I2C address for the first LCD
   lcd_init(&lcd);
-
-  
 
   /* USER CODE END 2 */
 
@@ -174,25 +171,6 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 2 */
 
-}
-
-/**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GPIO_Init(void)
-{
-  /* USER CODE BEGIN MX_GPIO_Init_1 */
-
-  /* USER CODE END MX_GPIO_Init_1 */
-
-  /* GPIO Ports Clock Enable */
-  // __HAL_RCC_GPIOB_CLK_ENABLE();
-
-  /* USER CODE BEGIN MX_GPIO_Init_2 */
-
-  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
