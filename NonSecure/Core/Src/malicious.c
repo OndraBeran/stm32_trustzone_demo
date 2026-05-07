@@ -94,43 +94,44 @@ int main(void)
   lcd.address = 0x4E;    // I2C address for the first LCD
   lcd_init(&lcd);
 
-  
-
-  /* Intentional SecureFault: read from secure flash alias (0x0C000000).
-     Non-Secure access to this address is blocked by SAU/IDAU and will
-     trigger a SecureFault exception immediately. */
-  volatile uint32_t *secure_flash = (volatile uint32_t *)0x0C000000U;
-  volatile uint32_t dummy = *secure_flash;
-  (void)dummy;
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
-    lcd_clear(&lcd);
+  
+  lcd_clear(&lcd);
   
 
 
-    lcd_puts(&lcd, "Attempts left: ");
-    lcd_putchar(&lcd, remaining_tries_nsc() + '0'); // Convert number to character
+  lcd_puts(&lcd, "Malicious code!");
+  lcd_putchar(&lcd, remaining_tries_nsc() + '0'); // Convert number to character
 
-    lcd_gotoxy(&lcd, 0, 1);
-
-    int res = authenticate(print_asterisk);
+  /* Intentional SecureFault: read from secure flash alias (0x0C000000).
+  Non-Secure access to this address is blocked by SAU/IDAU and will
+  trigger a SecureFault exception immediately. */
+  volatile uint32_t *secure_flash = (volatile uint32_t *)0x08000000U;
+  volatile uint32_t dummy = *secure_flash;
+  (void)dummy;
+  
+  // while (1)
+  // {
+  //   /* USER CODE END WHILE */
     
-    lcd_clear(&lcd);
-    if (res == 0) {
-      lcd_puts(&lcd, "ok");
-    } else {
-      lcd_puts(&lcd, "access denied");
-    }
 
-    HAL_Delay(2000);
-    /* USER CODE BEGIN 3 */
-  }
+  //   lcd_gotoxy(&lcd, 0, 1);
+
+  //   int res = authenticate(print_asterisk);
+    
+  //   lcd_clear(&lcd);
+  //   if (res == 0) {
+  //     lcd_puts(&lcd, "ok");
+  //   } else {
+  //     lcd_puts(&lcd, "access denied");
+  //   }
+
+  //   HAL_Delay(2000);
+  //   /* USER CODE BEGIN 3 */
+  // }
   /* USER CODE END 3 */
 }
 

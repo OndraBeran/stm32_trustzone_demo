@@ -39,6 +39,25 @@ add_executable(${CMAKE_PROJECT_NAME})
 # Include mx-generated
 include("mx-generated.cmake")
 
+# Rename v1 output
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME "${CMAKE_PROJECT_NAME}_v1")
+target_link_options(${CMAKE_PROJECT_NAME} PRIVATE "-Wl,-Map=${CMAKE_PROJECT_NAME}_v1.map")
+
+# v2 variant — uses _main.c (malicious) instead of main.c
+set(_V2 "${CMAKE_PROJECT_NAME}_v2")
+add_executable(${_V2})
+
+set(_V2_App_Src ${MX_Application_Src})
+list(FILTER _V2_App_Src EXCLUDE REGEX ".*[/]main\\.c$")
+target_sources(${_V2} PRIVATE
+    ${_V2_App_Src}
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/malicious.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/i2c_lcd.c
+)
+target_link_libraries(${_V2} ${MX_LINK_LIBS})
+target_link_options(${_V2} PRIVATE "-Wl,-Map=${_V2}.map")
+set_target_properties(${_V2} PROPERTIES ADDITIONAL_CLEAN_FILES "${_V2}.map")
+
 
 # In order to use CMake for cross-compiling
 set(CMAKE_CXX_COMPILER_FORCED "true")

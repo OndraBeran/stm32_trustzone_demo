@@ -47,7 +47,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-
+void SecureFault_Handler_C(uint32_t *frame);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -145,13 +145,13 @@ void UsageFault_Handler(void)
 void SecureFault_Handler(void)
 {
   /* USER CODE BEGIN SecureFault_IRQn 0 */
-
+  printf("SecureFault_Handler: A secure fault has occurred! Entering infinite loop...\n");
   /* USER CODE END SecureFault_IRQn 0 */
-  while (1)
-  {
-    /* USER CODE BEGIN W1_SecureFault_IRQn 0 */
-    /* USER CODE END W1_SecureFault_IRQn 0 */
-  }
+  // while (1)
+  // {
+  //   /* USER CODE BEGIN W1_SecureFault_IRQn 0 */
+  //   /* USER CODE END W1_SecureFault_IRQn 0 */
+  // }
 }
 
 /**
@@ -220,10 +220,10 @@ void SysTick_Handler(void)
 void GTZC_IRQHandler(void)
 {
   /* USER CODE BEGIN GTZC_IRQn 0 */
-  printf("TrustZone violation detected! Entering infinite loop...\n");
-  while (1)
-  {
-  }
+  printf("GTZC Interrupt occured!\n");
+  // while (1)
+  // {
+  // }
   /* USER CODE END GTZC_IRQn 0 */
   HAL_GTZC_IRQHandler();
   /* USER CODE BEGIN GTZC_IRQn 1 */
