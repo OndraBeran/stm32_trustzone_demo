@@ -56,6 +56,10 @@ RNG_HandleTypeDef hrng;
 
 SPI_HandleTypeDef hspi1;
 
+const uint8_t key[] = {0xf9, 0x75, 0xeb, 0x3c, 0x2f, 0xd7, 0x90, 0xc9, 0x6f, 0x29, 0x4f,
+                                0x15, 0x57, 0xa5, 0x03, 0x17, 0x80, 0xc9, 0xaa, 0xfa, 0x14, 0x0d,
+                                0xa2, 0x8f, 0x55, 0xe7, 0x51, 0x57, 0x37, 0xb2, 0x50, 0x2c};
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -133,6 +137,7 @@ int main(void)
     Error_Handler();
   }
 
+  printf("address of key in secure memory: %p\n", (void*)key);
 
   // this function starts the communication with the TROPIC01
   // and initializes data for PIN verification via mac_and_destroy
