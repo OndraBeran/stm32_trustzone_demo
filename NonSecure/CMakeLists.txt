@@ -53,6 +53,9 @@ target_sources(${_V2} PRIVATE
     ${_V2_App_Src}
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/malicious.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/i2c_lcd.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/KeyPad.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_spi.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_spi_ex.c
 )
 target_link_libraries(${_V2} ${MX_LINK_LIBS})
 target_link_options(${_V2} PRIVATE "-Wl,-Map=${_V2}.map")

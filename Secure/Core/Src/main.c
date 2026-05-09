@@ -266,17 +266,23 @@ static void MX_GTZC_S_Init(void)
   MPCBB_ConfigTypeDef MPCBB_Area_Desc = {0};
 
   /* USER CODE BEGIN GTZC_S_Init 1 */
-
+  /* Clear any pending GTZC flags before enabling interrupts */
+  HAL_GTZC_TZIC_ClearFlag(GTZC_PERIPH_SPI1);
+  HAL_GTZC_TZIC_ClearFlag(GTZC_PERIPH_FLASH);
   /* USER CODE END GTZC_S_Init 1 */
-  if (HAL_GTZC_TZIC_EnableIT(GTZC_PERIPH_I2C1) != HAL_OK)
-  {
-    Error_Handler();
-  }
   if (HAL_GTZC_TZIC_EnableIT(GTZC_PERIPH_SPI1) != HAL_OK)
   {
     Error_Handler();
   }
   if (HAL_GTZC_TZIC_EnableIT(GTZC_PERIPH_FLASH) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_GTZC_TZIC_EnableIT(GTZC_PERIPH_SRAM1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_GTZC_TZIC_EnableIT(GTZC_PERIPH_SRAM2) != HAL_OK)
   {
     Error_Handler();
   }

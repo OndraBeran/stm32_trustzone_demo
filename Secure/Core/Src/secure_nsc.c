@@ -23,7 +23,6 @@
 #include "main.h"
 #include "secure_nsc.h"
 #include "KeyPad.h"
-#include "identify_chip.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -41,8 +40,6 @@
   */
 
 /* Global variables ----------------------------------------------------------*/
-void *pSecureFaultCallback = NULL;   /* Pointer to secure fault callback in Non-secure */
-void *pSecureErrorCallback = NULL;   /* Pointer to secure error callback in Non-secure */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -50,30 +47,8 @@ void *pSecureErrorCallback = NULL;   /* Pointer to secure error callback in Non-
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
-
-/**
-  * @brief  Secure registration of non-secure callback.
-  * @param  CallbackId  callback identifier
-  * @param  func        pointer to non-secure function
-  * @retval None
-  */
-CMSE_NS_ENTRY void SECURE_RegisterCallback(SECURE_CallbackIDTypeDef CallbackId, void *func)
-{
-  if(func != NULL)
-  {
-    switch(CallbackId)
-    {
-      case SECURE_FAULT_CB_ID:           /* SecureFault Interrupt occurred */
-      pSecureFaultCallback = func;
-      break;
-      case GTZC_ERROR_CB_ID:             /* GTZC Interrupt occurred */
-      pSecureErrorCallback = func;
-      break;
-      default:
-      /* unknown */
-      break;
-    }
-  }
+void protected_function(void) {
+  printf("This is a protected function that can only be called from the secure world.\n");
 }
 
 CMSE_NS_ENTRY uint8_t remaining_tries_nsc() {
@@ -84,14 +59,11 @@ CMSE_NS_ENTRY int authenticate(void *callback)
 {
   uint8_t input_pin[4] = {0};
 
-  funcptr_NS ns_cb = NULL;
+  funcptr_NS ns_callback = NULL;
 
+  // If a callback function is provided, create a non-secure callable function pointer
   if (callback != NULL) {
-    ns_cb = (funcptr_NS)cmse_nsfptr_create(callback);
-
-    if (!cmse_is_nsfptr(ns_cb)) {
-      return -1;
-    }
+    ns_callback = (funcptr_NS)cmse_nsfptr_create(callback);
   }
 
   for (int i = 0; i < 4; ++i) {
@@ -99,14 +71,17 @@ CMSE_NS_ENTRY int authenticate(void *callback)
     printf("Key Pressed: %c\n", c);
     input_pin[i] = c - '0';  // Convert char digit to integer
 
-    if (ns_cb != NULL) {
-      ns_cb();  // Non-secure callback invocation
+    // Call the non-secure callback to print an asterisk for each entered digit
+    if (ns_callback != NULL) {
+      ns_callback();
     }
   }
 
   int check_result = check_pin(input_pin, sizeof(input_pin));
-  printf("Check pin returned: %d\n", check_result);
-  printf("Remaining tries: %d\n", remaining_tries());
+
+  if (check_result == 0) {
+    protected_function();  // Call a secure function on successful authentication
+  }
 
   return check_result;
 }

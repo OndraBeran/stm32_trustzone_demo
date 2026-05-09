@@ -484,7 +484,6 @@ static lt_ret_t PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uint8_
         goto exit;
     }
 
-    // TODO: originally < MACANDD_ROUNDS - 1, not sure if this is corrects, but it fixes the issue
     for (int x = nvm.i; x < MACANDD_ROUNDS; x++) {
         uint8_t ignore[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
 

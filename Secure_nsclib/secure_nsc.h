@@ -27,18 +27,9 @@
 #include <stdint.h>
 
 /* Exported types ------------------------------------------------------------*/
-/**
-  * @brief  non-secure callback ID enumeration definition
-  */
-typedef enum
-{
-SECURE_FAULT_CB_ID     = 0x00U, /*!< System secure fault callback ID */
-  GTZC_ERROR_CB_ID       = 0x01U  /*!< GTZC secure error callback ID */
-} SECURE_CallbackIDTypeDef;
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-void SECURE_RegisterCallback(SECURE_CallbackIDTypeDef CallbackId, void *func);
 
 uint8_t remaining_tries_nsc(void);
 

@@ -1,1 +1,0 @@
-int identify_chip(void);

@@ -20,7 +20,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32u5xx_hal_gtzc.h"
-#include "stm32u5xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
@@ -227,31 +226,28 @@ void GTZC_IRQHandler(void)
     && gtzc_flag == GTZC_TZIC_ILA_EVENT_PENDING)
   {
     printf("GTZC Interrupt: I2C1 peripheral triggered the interrupt.\n");
-    HAL_GTZC_TZIC_ClearFlag(GTZC_PERIPH_I2C1);
   }
   else if (HAL_GTZC_TZIC_GetFlag(GTZC_PERIPH_SPI1, &gtzc_flag) == HAL_OK 
     && gtzc_flag == GTZC_TZIC_ILA_EVENT_PENDING)
   {
     printf("GTZC Interrupt: SPI1 peripheral triggered the interrupt.\n");
-    HAL_GTZC_TZIC_ClearFlag(GTZC_PERIPH_SPI1);
   }
   else if (HAL_GTZC_TZIC_GetFlag(GTZC_PERIPH_FLASH, &gtzc_flag) == HAL_OK 
     && gtzc_flag == GTZC_TZIC_ILA_EVENT_PENDING)
   {
     printf("GTZC Interrupt: FLASH peripheral triggered the interrupt.\n");
-    HAL_GTZC_TZIC_ClearFlag(GTZC_PERIPH_FLASH);
   }
   else
   {
     printf("GTZC Interrupt: Unknown peripheral triggered the interrupt.\n");
   }
-  // while (1)
-  // {
-  // }
   /* USER CODE END GTZC_IRQn 0 */
-  HAL_GTZC_IRQHandler();
+  
   /* USER CODE BEGIN GTZC_IRQn 1 */
-
+  HAL_GTZC_IRQHandler();
+  while (1)
+  {
+  }
   /* USER CODE END GTZC_IRQn 1 */
 }
 
