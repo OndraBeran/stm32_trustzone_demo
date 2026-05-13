@@ -51,11 +51,11 @@ void protected_function(void) {
   printf("This is a protected function that can only be called from the secure world.\n");
 }
 
-CMSE_NS_ENTRY uint8_t remaining_tries_nsc() {
+CMSE_NS_ENTRY uint8_t get_remaining_pin_attempts() {
   return remaining_tries();
 }
 
-CMSE_NS_ENTRY int authenticate(void *callback)
+CMSE_NS_ENTRY int verify_and_execute(void *callback)
 {
   uint8_t input_pin[4] = {0};
 

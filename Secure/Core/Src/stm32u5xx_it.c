@@ -85,7 +85,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-
+  printf("HardFault occured!\n");
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
@@ -221,11 +221,12 @@ void GTZC_IRQHandler(void)
 {
   /* USER CODE BEGIN GTZC_IRQn 0 */
   printf("GTZC Interrupt occured!\n");
+  // Use GTZC HAL API to check which peripheral caused the interrupt
   uint32_t gtzc_flag = 0;
-  if (HAL_GTZC_TZIC_GetFlag(GTZC_PERIPH_I2C1, &gtzc_flag) == HAL_OK 
+  if (HAL_GTZC_TZIC_GetFlag(GTZC_PERIPH_SRAM1, &gtzc_flag) == HAL_OK 
     && gtzc_flag == GTZC_TZIC_ILA_EVENT_PENDING)
   {
-    printf("GTZC Interrupt: I2C1 peripheral triggered the interrupt.\n");
+    printf("GTZC Interrupt: SRAM1 peripheral triggered the interrupt.\n");
   }
   else if (HAL_GTZC_TZIC_GetFlag(GTZC_PERIPH_SPI1, &gtzc_flag) == HAL_OK 
     && gtzc_flag == GTZC_TZIC_ILA_EVENT_PENDING)
@@ -244,7 +245,10 @@ void GTZC_IRQHandler(void)
   /* USER CODE END GTZC_IRQn 0 */
   
   /* USER CODE BEGIN GTZC_IRQn 1 */
+  // Clear the GTZC interrupt flags
   HAL_GTZC_IRQHandler();
+
+  // Infinite loop to halt the execution
   while (1)
   {
   }

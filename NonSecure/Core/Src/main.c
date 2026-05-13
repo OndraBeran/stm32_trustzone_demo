@@ -24,6 +24,7 @@
 #include "i2c_lcd.h"
 #include "secure_nsc.h"
 #include "stm32u5xx_hal.h"
+#include <stdint.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,6 +59,7 @@ static void MX_I2C1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+// callback function invoked when a key is pressed
 void print_asterisk(void) {
     lcd_putchar(&lcd, '*');
 }
@@ -91,8 +93,10 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  lcd.hi2c = &hi2c1;     // hi2c1 is your I2C handler
-  lcd.address = 0x4E;    // I2C address for the first LCD
+  
+  // Initialize LCD
+  lcd.hi2c = &hi2c1;
+  lcd.address = 0x4E;
   lcd_init(&lcd);
 
   /* USER CODE END 2 */
@@ -104,16 +108,24 @@ int main(void)
     /* USER CODE END WHILE */
     
     /* USER CODE BEGIN 3 */
+    
     lcd_clear(&lcd);
-  
+    
+    uint8_t attempts = get_remaining_pin_attempts();
+    if (attempts == 0) {
+      lcd_puts(&lcd, "No attempts left!");
+      while (1); // Lock up the system
+    }
 
-
+    // Display remaining attempts
     lcd_puts(&lcd, "Attempts left: ");
-    lcd_putchar(&lcd, remaining_tries_nsc() + '0'); // Convert number to character
+    lcd_putchar(&lcd, attempts + '0'); // Convert number to character
 
+    // move to second line
     lcd_gotoxy(&lcd, 0, 1);
 
-    int res = authenticate(print_asterisk);
+    // call NSC
+    int res = verify_and_execute(print_asterisk);
     
     lcd_clear(&lcd);
     if (res == 0) {

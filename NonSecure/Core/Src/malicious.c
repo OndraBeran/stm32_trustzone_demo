@@ -26,6 +26,7 @@
 #include "stm32u5xx_hal.h"
 #include "stm32u5xx_hal_spi.h"
 #include "KeyPad.h"
+#include <stdint.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -64,11 +65,21 @@ static void MX_SPI1_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void read_secure_ram(void) {
-  // 0x20000000 is the start of the internal SRAM, which is configured as secure
-  // Accessing it from non-secure code should trigger a GTZC interrupt because of the security violation
-  volatile uint32_t *secure_ram = (volatile uint32_t *)0x20000000U;
-  volatile uint32_t dummy = *secure_ram;
+void read_secure_ram1(void) {
+  // 0x30000000 is the alias address for secure SRAM
+  // Accessing it should trigger a SecureFault
+  volatile uint32_t *secure_flash = (volatile uint32_t *)0x30000000U;
+  volatile uint32_t dummy = *secure_flash;
+  (void)dummy;
+}
+
+void read_secure_ram2(void) {
+  // 0x20000000 is the start of the Non-secure SRAM according to the IDAU
+  // SecureFault should thus not be triggered
+  // However SRAM1 is configured as secure in the GTZC, meaning the actual start of Non-secure SRAM is at 0x20030000
+  // Accessing 0x20000000 should trigger a GTZC interrupt
+  volatile uint32_t *secure_flash = (volatile uint32_t *)0x20000000U;
+  volatile uint32_t dummy = *secure_flash;
   (void)dummy;
 }
 
@@ -104,6 +115,18 @@ void access_keypad(void) {
   lcd_putchar(&lcd, c);
 }
 
+void branch_to_secure1(void) {
+  // Attempt to branch to a secure code address
+  void (*secure_func)(void) = (void (*)(void))0x0c000000U;
+  secure_func();
+}
+
+void branch_to_secure2(void) {
+  // Attempt to branch to a secure code address
+  void (*secure_func)(void) = (void (*)(void))0x08000000U;
+  secure_func();
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -135,30 +158,25 @@ int main(void)
   /* USER CODE BEGIN 2 */
   lcd.hi2c = &hi2c1;
   lcd_init(&lcd);
+  lcd_clear(&lcd);
+  lcd_puts(&lcd, "Malicious code!");
+
+
+  // Test various illegal actions
+  // only one test can  be run at a timeas the interrupt handlers contain infinite loops
+  read_secure_ram1();
+  // read_secure_ram2()
+  // read_secure_flash1();
+  // read_secure_flash2();
+  // access_spi();
+  // access_keypad();
+  // branch_to_secure1();
+  // branch_to_secure2();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  
-  lcd_clear(&lcd);
-  
-
-
-  lcd_puts(&lcd, "Malicious code!");
-
-  /* Intentional SecureFault: read from secure flash alias (0x0C000000).
-  Non-Secure access to this address is blocked by SAU/IDAU and will
-  trigger a SecureFault exception immediately. */
-  // volatile uint32_t *secure_flash = (volatile uint32_t *)0x0c000000U;
-  // volatile uint32_t dummy = *secure_flash;
-  // (void)dummy;
-
-  read_secure_ram();
-  // access_spi();
-  // access_keypad();
-
-
 
   while (1)
   {

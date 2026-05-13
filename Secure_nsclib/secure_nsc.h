@@ -31,9 +31,9 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 
-uint8_t remaining_tries_nsc(void);
+uint8_t get_remaining_pin_attempts(void);
 
-int authenticate(void *callback);
+int verify_and_execute(void *callback);
 
 #endif /* SECURE_NSC_H */
 /* USER CODE END Non_Secure_CallLib_h */
