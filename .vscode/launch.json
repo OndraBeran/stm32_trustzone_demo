@@ -32,10 +32,10 @@
             "deviceCore": "Cortex-M33",
             "imagesAndSymbols": [
                 {
-                    "imageFileName": "${workspaceFolder}/NonSecure/build/test_libtropic_tz_NS_v1.elf"
+                    "imageFileName": "${workspaceFolder}/NonSecure/build/stm32_trustzone_demo_NS_v1.elf"
                 },
                 {
-                    "imageFileName": "${workspaceFolder}/Secure/build/test_libtropic_tz_S.elf"
+                    "imageFileName": "${workspaceFolder}/Secure/build/stm32_trustzone_demo_S.elf"
                 }
             ],
             "verbose": false
@@ -50,10 +50,10 @@
             "deviceCore": "Cortex-M33",
             "imagesAndSymbols": [
                 {
-                    "imageFileName": "${workspaceFolder}/NonSecure/build/test_libtropic_tz_NS_v2.elf"
+                    "imageFileName": "${workspaceFolder}/NonSecure/build/stm32_trustzone_demo_NS_v2.elf"
                 },
                 {
-                    "imageFileName": "${workspaceFolder}/Secure/build/test_libtropic_tz_S.elf"
+                    "imageFileName": "${workspaceFolder}/Secure/build/stm32_trustzone_demo_S.elf"
                 }
             ],
             "verbose": false

@@ -30,7 +30,7 @@ set(STM32_LINKER_SCRIPT STM32U545xx_FLASH_s.ld)
 set(STM32_LINKER_OPTION  -Wl,--cmse-implib\ -Wl,--out-implib="${CMAKE_CURRENT_SOURCE_DIR}/../Secure_nsclib/secure_nsclib.o")
 
 # Set the project name
-set(CMAKE_PROJECT_NAME test_libtropic_tz_S)
+set(CMAKE_PROJECT_NAME stm32_trustzone_demo_S)
 project(${CMAKE_PROJECT_NAME})
 
 # Create an executable object type

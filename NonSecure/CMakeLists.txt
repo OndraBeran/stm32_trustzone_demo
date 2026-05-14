@@ -30,7 +30,7 @@ set(STM32_LINKER_SCRIPT STM32U545xx_FLASH_ns.ld)
 set(STM32_LINKER_OPTION  )
 
 # Set the project name
-set(CMAKE_PROJECT_NAME test_libtropic_tz_NS)
+set(CMAKE_PROJECT_NAME stm32_trustzone_demo_NS)
 project(${CMAKE_PROJECT_NAME})
 
 # Create an executable object type

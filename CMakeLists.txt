@@ -12,7 +12,7 @@ include(ExternalProject)
 set(CMAKE_CXX_COMPILER_FORCED "true")
 
 # Set the project name
-set(CMAKE_PROJECT_NAME test_libtropic_tz)
+set(CMAKE_PROJECT_NAME stm32_trustzone_demo)
 
 # Core project settings
 project(${CMAKE_PROJECT_NAME})
