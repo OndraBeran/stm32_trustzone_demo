@@ -2,7 +2,7 @@ include(FetchContent)
 
 # Set path to libtropic if not already defined
 if(NOT DEFINED PATH_LIBTROPIC)
-    set(PATH_LIBTROPIC "${CMAKE_CURRENT_SOURCE_DIR}/../../libtropic/" CACHE PATH "Path to libtropic library")
+    set(PATH_LIBTROPIC "${CMAKE_CURRENT_SOURCE_DIR}/../libtropic/" CACHE PATH "Path to libtropic library")
 endif()
 
 # Select pairing keys written during manufacturing into your TROPIC01

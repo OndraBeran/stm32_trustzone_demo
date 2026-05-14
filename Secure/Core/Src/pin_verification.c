@@ -29,8 +29,8 @@ lt_ctx_mbedtls_v4_t crypto_ctx;
 
 // Pairing keys the model was configured with, defaults to prod0 keys.
 // Provide your own keys here if you configured the model differently.
-#define DEFAULT_SH0_PRIV sh0priv_prod0
-#define DEFAULT_SH0_PUB sh0pub_prod0
+#define DEFAULT_SH0_PRIV lt_sh0priv_prod0
+#define DEFAULT_SH0_PUB lt_sh0pub_prod0
 
 /** @brief Last slot in User memory used for storing of M&D related data (only in this example). */
 #define MACANDD_R_MEM_DATA_SLOT (511)
@@ -638,34 +638,6 @@ static int lt_start_session(lt_handle_t *handle, lt_dev_stm32u5xx_t *device,
         return -1;
     }
     printf("OK\n");
-
-    return 0;
-}
-
-static int deinit(lt_handle_t *lt_handle) {
-    lt_ret_t ret = lt_session_abort(lt_handle);
-    if (LT_OK != ret) {
-        fprintf(stderr, "\nFailed to abort Secure Session, ret=%s\n", lt_ret_verbose(ret));
-        lt_deinit(lt_handle);
-        mbedtls_psa_crypto_free();
-        return -1;
-    }
-    printf("OK\n");
-
-    printf("Deinitializing handle...");
-    ret = lt_deinit(lt_handle);
-    if (LT_OK != ret) {
-        fprintf(stderr, "\nFailed to deinitialize handle, ret=%s\n", lt_ret_verbose(ret));
-        mbedtls_psa_crypto_free();
-        return -1;
-    }
-    printf("OK\n");
-
-    // Cryptographic function provider deinitialization.
-    //
-    // In production, this would be done only once, typically
-    // during termination of the application.
-    mbedtls_psa_crypto_free();
 
     return 0;
 }
