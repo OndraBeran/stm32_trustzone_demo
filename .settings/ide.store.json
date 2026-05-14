@@ -6,6 +6,6 @@
   "device": "STM32U545RET6Q",
   "toolchain": "GCC",
   "core": "Cortex-M33",
-  "order": 2,
+  "order": 0,
   "tz": "Non-secure"
 }
