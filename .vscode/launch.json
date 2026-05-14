@@ -1,0 +1,62 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "stlinkgdbtarget",
+            "request": "launch",
+            "name": "STM32Cube: STM32 Launch ST-Link GDB Server",
+            "origin": "snippet",
+            "cwd": "${workspaceFolder}",
+            "preBuild": "${command:st-stm32-ide-debug-launch.build}",
+            "runEntry": "main",
+            "deviceCore": "Cortex-M33",
+            "imagesAndSymbols": [
+                {
+                    "imageFileName": "${command:st-stm32-ide-debug-launch.get-projects-binary-from-context1}"
+                },
+                {
+                    "imageFileName": "${command:st-stm32-ide-debug-launch.get-projects-binary-from-context2}"
+                }
+            ]
+        },
+        {
+            "name": "default",
+            "type": "stlinkgdbtarget",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "preBuild": "${command:st-stm32-ide-debug-launch.build}",
+            "runEntry": "main",
+            "deviceCore": "Cortex-M33",
+            "imagesAndSymbols": [
+                {
+                    "imageFileName": "${workspaceFolder}/NonSecure/build/test_libtropic_tz_NS_v1.elf"
+                },
+                {
+                    "imageFileName": "${workspaceFolder}/Secure/build/test_libtropic_tz_S.elf"
+                }
+            ],
+            "verbose": false
+        },
+        {
+            "name": "malicious",
+            "type": "stlinkgdbtarget",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "preBuild": "${command:st-stm32-ide-debug-launch.build}",
+            "runEntry": "main",
+            "deviceCore": "Cortex-M33",
+            "imagesAndSymbols": [
+                {
+                    "imageFileName": "${workspaceFolder}/NonSecure/build/test_libtropic_tz_NS_v2.elf"
+                },
+                {
+                    "imageFileName": "${workspaceFolder}/Secure/build/test_libtropic_tz_S.elf"
+                }
+            ],
+            "verbose": false
+        }
+    ]
+}
