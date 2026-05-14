@@ -35,4 +35,4 @@ After opening the project with VSCode, navigate to the STM32Cube extesion. Click
 
 After configuring, navigate to the Debug tab. There are 2 *Run and Debug* profiles. *default* runs the normal PIN verification application, *malicious* runs the "malicious" code used for testing the TrustZone configuration.
 
-For more details, see chapters 6-8 in the thesis.
+For more details, see chapters 6-8 of the thesis.
