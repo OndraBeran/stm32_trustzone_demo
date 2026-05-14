@@ -80,7 +80,10 @@ CMSE_NS_ENTRY int verify_and_execute(void *callback)
   int check_result = check_pin(input_pin, sizeof(input_pin));
 
   if (check_result == 0) {
+    printf("PIN verification successful!\n");
     protected_function();  // Call a secure function on successful authentication
+  } else {
+    printf("PIN verification failed!\n");
   }
 
   return check_result;

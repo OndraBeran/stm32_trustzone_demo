@@ -55,7 +55,6 @@ SPI_HandleTypeDef hspi1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
@@ -110,9 +109,13 @@ void access_spi(void) {
 void access_keypad(void) {
   // GPIOs are TrustZone aware, Non-secure access to Secure pins is ignored
   // The code should get stuck waiting for a key press, but no SecureFault should be triggered
+  
+  lcd_clear(&lcd);
+  lcd_puts(&lcd, "Press a key");
+  
   KeyPad_Init();
   char c = KeyPad_WaitForKeyGetChar(0);
-  lcd_putchar(&lcd, c);
+  lcd_putchar(&lcd, c);  // this code should never be reached
 }
 
 void branch_to_secure1(void) {
@@ -157,6 +160,7 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   lcd.hi2c = &hi2c1;
+  lcd.address = 0x4E;
   lcd_init(&lcd);
   lcd_clear(&lcd);
   lcd_puts(&lcd, "Malicious code!");
@@ -165,7 +169,7 @@ int main(void)
   // Test various illegal actions
   // only one test can  be run at a timeas the interrupt handlers contain infinite loops
   read_secure_ram1();
-  // read_secure_ram2()
+  // read_secure_ram2();
   // read_secure_flash1();
   // read_secure_flash2();
   // access_spi();
